@@ -1,0 +1,51 @@
+package org.test.demo;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
+public class PickUpDoll {
+    @Test
+    @DisplayName("인형뽑기의 결과가 2가 나온다.")
+    void pickUpDoll() {
+        int[][] board = {{0, 0, 0, 0, 0}
+                        ,{0, 0, 1, 0, 3}
+                        ,{0, 2, 5, 0, 1}
+                        ,{4, 2, 4, 4, 2}
+                        ,{3, 5, 1, 3, 1}};
+        int[] moves = {1, 5, 3, 5, 1, 2, 1, 4};
+        Assertions.assertEquals(2, solution(board, moves));
+    }
+    
+    public int solution(int[][] board, int[] moves) {
+        ArrayList<Integer> stack = new ArrayList<>();
+        int answer = 0;
+        for (int move : moves) {
+            boolean isHit = false;
+            int line = 0;
+            while(!isHit && line < board.length){
+                int curDoll = board[line][move - 1];
+                if (curDoll == 0) {
+                    line ++;
+                    continue;
+                }
+                isHit = true;
+                if (!stack.isEmpty()) {
+                    Integer prevDoll = stack.get(stack.size() - 1);
+                    if (prevDoll == curDoll) {
+                        stack.remove(stack.size() - 1);
+                        answer+=2;
+                    }else{
+                        stack.add(curDoll);
+                    }
+                }else{
+                    stack.add(curDoll);
+                }
+                board[line][move - 1] = 0;
+            }
+        }
+        return answer;
+    }
+}
