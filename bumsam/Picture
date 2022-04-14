@@ -1,0 +1,65 @@
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+public class Picture {
+    private final char[] KAKAO_FRIENDS = {'A', 'C', 'F', 'J', 'M', 'N', 'R', 'T'};
+    private final boolean[] visited = new boolean[KAKAO_FRIENDS.length];
+    private final char[] resultArr = new char[KAKAO_FRIENDS.length];
+    private int result = 0;
+    @Test
+    @DisplayName("원하는 배치로 나올 수 있는 경우의 수가 3648이다")
+    void takePicture(){
+        int n = 2;
+        String[] data = {"N~F=0", "R~T>2"};
+        Assertions.assertEquals(3648, solution(n, data));
+    }
+
+    public  int solution(int n, String[] data) {
+        permutation(0, data);
+        return result;
+    }
+
+    void permutation(int depth, String[] data){
+        if(depth == KAKAO_FRIENDS.length){
+            checkCommend(data);
+            return;
+        }
+
+        for(int i = 0; i<KAKAO_FRIENDS.length; i++){
+            if(!visited[i]){
+                visited[i] = true;
+                resultArr[depth] = KAKAO_FRIENDS[i];
+                permutation(depth + 1, data);
+                visited[i] = false;
+            }
+        }
+    }
+
+    void checkCommend(String[] data){
+        for (String commend : data) {
+            char to = commend.charAt(0);
+            char from = commend.charAt(2);
+            char compare = commend.charAt(3);
+            int distance = commend.charAt(4) - '0';
+            String resultStr = new String(resultArr);
+            int toIndex = resultStr.indexOf(to);
+            int fromIndex = resultStr.indexOf(from);
+            int fromToDistance = Math.abs((toIndex - fromIndex)) - 1;
+
+            switch (compare){
+                case '<':
+                    if(!(fromToDistance < distance)) return;
+                    break;
+                case '>':
+                    if(!(fromToDistance > distance)) return;
+                    break;
+                case '=':
+                    if(!(fromToDistance == distance)) return;
+                    break;
+            }
+        }
+        result++;
+    }
+}
